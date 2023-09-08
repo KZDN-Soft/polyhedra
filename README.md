@@ -25,7 +25,8 @@
 
 <h2>Автор</h2> 
 <a href="https://t.me/maked0n1an" target="_blank">@maked0n1an</a>
-0x74eEfCAD1Ad18705596106703A3036BaAD6B3145
+
+Донаты - 0x74eEfCAD1Ad18705596106703A3036BaAD6B3145
 
 <h2>Вопросы и обсуждения</h2>
 <a href="https://t.me/+gw1XidxLobE1MmEy" target="_blank">PSS Communiry Chat</a>
