@@ -29,4 +29,5 @@
 
 <h2>Вопросы и обсуждения</h2>
 <a href="https://t.me/+gw1XidxLobE1MmEy" target="_blank">PSS Communiry Chat</a>
+
 <a href="https://t.me/kzdnclub" target="_blank">КЖДН</a>
