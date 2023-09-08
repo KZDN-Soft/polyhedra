@@ -23,5 +23,10 @@
 2. Отправка сообщений
 3. Рандомизация всех действий
 
-<h2>Донат</h2> 0x74eEfCAD1Ad18705596106703A3036BaAD6B3145
-<h2>Telegram</h2><a href="https://t.me/maked0n1an" target="_blank">@maked0n1an</a>
+<h2>Автор</h2> 
+<a href="https://t.me/maked0n1an" target="_blank">@maked0n1an</a>
+0x74eEfCAD1Ad18705596106703A3036BaAD6B3145
+
+<h2>Вопросы и обсуждения</h2>
+<a href="https://t.me/+gw1XidxLobE1MmEy" target="_blank">PSS Communiry Chat</a>
+<a href="https://t.me/kzdnclub" target="_blank">КЖДН</a>
