@@ -10,6 +10,8 @@ from util.chain import Chain
     Прокси - по желанию, но рекомендую при большом количестве кошельков,
     нужно вставить в формате  protocol//:login:pass@ip:port 
     в файле proxies.txt
+
+    Закоменти или раскоменти внизу то, что тебе (не) нужно по активностям
 '''
 
 activities_list = [
@@ -24,7 +26,8 @@ activities_list = [
         # Activity.BSC_POLYGON_ZKMESSENGER,
         # Activity.ZK_LIGHT_CLIENT_NFT_OPERATIONS,
         # Activity.BNB_CHAIN_LUBAN_NFT_OPERATIONS,
-        Activity.LEGENDARY_PANDA_GRIND_OPERATIONS
+        # Activity.MINT_ALL_PANDAS
+        Activity.LEGENDARY_PANDA_GRIND_OPERATIONS,
     ]
 
 # Доступные маршруты гринда: 'Uncommon' | 'Rare' | 'Epic' | 'Legendary'
@@ -33,11 +36,7 @@ PANDRA_GRIND_ROUTE = 'Uncommon'
 # Нужно ли мешать кошельки? | Да - 1, Нет - 0
 IS_SHUFFLE_KEYS = 1
 
-# Количество кошельков для одновременного запуска, т.е если у вас 100 кошельков, и вы выбрали число 5,
-# то скрипт поделит ваши кошельки на 20 частей по 5 кошельков которые будут запущены одновременно
-WALLETS_IN_BATCH = 5
-
-# INITIAL_DELAY отвечает за начальную задержку между кошельками, нужна для одновременного запуска несколька кошелей, смотри wallets_in_batch выше
+# INITIAL_DELAY отвечает за начальную задержку между кошельками, нужна для одновременного запуска несколька кошелей
 # рекомендую не менять для максимального рандома
 INITIAL_DELAY = (1, 2)
 
@@ -45,7 +44,7 @@ INITIAL_DELAY = (1, 2)
 DELAY = (30, 100)
 
 # для клейма NFT, отправленных с polygon или core
-BIG_DELAY = 250 
+BIG_DELAY = 500 
 
 # moralis api key - https://admin.moralis.io/login идем сюда и получаем апи ключ, НУЖЕН DEFAULT KEY!, нужно для нахождения id нфт
 MORALIS_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjEwNzg2NDU4LWEyMWUtNDU3Mi1hNTU2LWI0OWE0ZTJhZTU3YyIsIm9yZ0lkIjoiMzQ0MTM2IiwidXNlcklkIjoiMzUzNzY3IiwidHlwZUlkIjoiNjY4MDVjNTQtMzlmYS00OGQ1LTgyMDItY2EwMjkzNmJiNzQ2IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE2ODcxMDk4MTUsImV4cCI6NDg0Mjg2OTgxNX0.6Sgw7i3Fl_5JRYV6_2Sz2SFDLp-i26xK4nPWzmcEWaQ'
@@ -67,6 +66,7 @@ MAINNET_ALPHA_NFT_CORE_BRIDGE   = Chain.CORE, Chain.POLYGON
 BSC_POLYGON_ZKMESSENGER         = Chain.BSC, Chain.ARBITRUM_NOVA
 BNB_CHAIN_LUBAN_NFT_BRIDGE      = Chain.BSC, [Chain.POLYGON, Chain.CELO, Chain.CORE]
 ZK_LIGHT_CLIENT_NFT_BRIDGE      = Chain.BSC, [Chain.POLYGON, Chain.CORE, Chain.CELO]
+COMBO_MYSTERY_BOX_BRIDGE        = Chain.COMBO_TESTNET, Chain.OP_BNB
 
 legendary_pandra_config = [ # 20 bridges + 5 mints
     #############################################========================= 
@@ -161,33 +161,37 @@ uncommon_pandra_config = [ # 5 bridges + 5 mints
     #############################################========================= 
     # [Chain.BSC, Chain.POLYGON],                 # ~$1.06
     # [Chain.BSC, Chain.CORE],                    # ~$0.67
-    # [Chain.BSC, Chain.CELO],                    # ~$0.6
-    [Chain.BSC, Chain.COMBO_TESTNET],           # ~$0.4
+    [Chain.BSC, Chain.CELO],                    # ~$0.6
+    # [Chain.BSC, Chain.COMBO_TESTNET],           # ~$0.4
     [Chain.BSC, Chain.OP_BNB],                  # ~$0.29
     #############################################========================= 
     # [Chain.POLYGON, Chain.BSC],                 # ~$1.39    
     # [Chain.POLYGON, Chain.CORE],                # ~$0.50
     # [Chain.POLYGON, Chain.CELO],                # ~$0.47
-    [Chain.POLYGON, Chain.COMBO_TESTNET],       # ~$0.35
-    [Chain.POLYGON, Chain.OP_BNB],              # ~$0.41
+    # [Chain.POLYGON, Chain.COMBO_TESTNET],       # ~$0.35
+    # [Chain.POLYGON, Chain.OP_BNB],              # ~$0.41
     # [Chain.POLYGON, Chain.MANTLE],              # ~$0.83
-    #############################################========================= 
+    # ############################################========================= 
     # [Chain.CORE, Chain.BSC],                    # ~$2.34
     # [Chain.CORE, Chain.POLYGON],                # ~$0.89
     # [Chain.CORE, Chain.POLYGON, Chain.CELO],    # ~$0.89 + $0.42 ~ $1.31
     # [Chain.CORE, Chain.COMBO_TESTNET],          # ~$0.43
-    [Chain.CORE, Chain.OP_BNB],                 # ~$0.43
-    #############################################========================= 
+    # [Chain.CORE, Chain.OP_BNB],                 # ~$0.43
+    # ############################################========================= 
     # [Chain.CELO, Chain.BSC],                    # ~$2.35
     # [Chain.CELO, Chain.POLYGON],                # ~$0.85
     # [Chain.CELO, Chain.POLYGON, Chain.CORE],    # ~$0.89 + $0.5 ~ $1.39   
     # [Chain.CELO, Chain.COMBO_TESTNET],          # ~$0.51
     # [Chain.CELO, Chain.OP_BNB],                 # ~$0.51           
-    #############################################========================= =$0
+    # ############################################========================= =$0
     # [Chain.BSC_TESTNET, Chain.OP_BNB],          
-    [Chain.BSC_TESTNET, Chain.COMBO_TESTNET],
+    # [Chain.BSC_TESTNET, Chain.COMBO_TESTNET],
 ]
 
 mint_pandra_config = [
-    Chain.CORE, Chain.CELO, Chain.POLYGON, Chain.BSC, Chain.BSC_TESTNET 
+    Chain.CORE, 
+    Chain.CELO, 
+    Chain.POLYGON, 
+    Chain.BSC, 
+    # Chain.BSC_TESTNET 
 ]

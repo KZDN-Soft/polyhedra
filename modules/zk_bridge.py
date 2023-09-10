@@ -123,7 +123,7 @@ class ZkBridge(Help):
             return False
 
     async def balance_and_get_id(self):
-        if self.chain not in [Chain.CORE, Chain.CELO, Chain.BSC_TESTNET]:
+        if self.chain not in [Chain.CORE, Chain.CELO, Chain.BSC_TESTNET, Chain.COMBO_TESTNET, Chain.OP_BNB]:
             try:
                 api_key = self.moralisapi
                 params = {
@@ -143,7 +143,7 @@ class ZkBridge(Help):
                     return id_  
             except Exception as e:
                 if 'list index out of range' in str(e):
-                    self.logger.error(f'{self.wallet_name} | {self.address} | {self.chain} - на кошельке отсутсвует "{self.nft}"...')
+                    self.logger.warning(f'{self.wallet_name} | {self.address} | {self.chain} - на кошельке отсутсвует "{self.nft}"...')
                     return None
                 else:
                     self.logger.error(f'{self.wallet_name} | {self.address} | {self.chain} - {e}...')         
@@ -153,7 +153,7 @@ class ZkBridge(Help):
                 return token_id  
             except Exception as e:
                 if 'list index out of range' in str(e):
-                    self.logger.error(f'{self.wallet_name} | {self.address} | {self.chain} - на кошельке отсутсвует "{self.nft}"...')
+                    self.logger.warning(f'{self.wallet_name} | {self.address} | {self.chain} - на кошельке отсутсвует "{self.nft}"...')
                     return None
                 else:
                     self.logger.error(f'{self.wallet_name} | {self.address} | {self.chain} - {e}...')                     
@@ -189,7 +189,15 @@ class ZkBridge(Help):
                 if status == 1:
                     self.logger.success(
                         f'{self.wallet_name} | {self.address} | {self.chain} - успешно заминтил "{self.nft}" : {scan}{self.w3.to_hex(tx_hash)}...')
-                    await self.sleep_indicator(self.chain)
+
+                    time_ = random.randint(DELAY[0], DELAY[1]) 
+
+                    if self.chain in [Chain.POLYGON, Chain.CORE] and self.to_chain in non_lz_chains:                        
+                        time_ = BIG_DELAY
+
+                    self.logger.info(f'{self.wallet_name} | {self.address} - начинаю работу через {time_} cекунд...')
+                    await self.sleep_indicator(self.chain, time_)         
+                    
                     return headers
                 else:
                     self.logger.info(f'{self.wallet_name} | {self.address} | {self.chain} - пробую минт еще раз...')
@@ -213,14 +221,6 @@ class ZkBridge(Help):
                     return False
 
     async def claim_nft(self, sender_tx_hash):
-        time_ = random.randint(DELAY[0], DELAY[1])
-
-        if self.chain in [Chain.POLYGON, Chain.CORE] and self.to_chain in [Chain.OP_BNB, Chain.COMBO_TESTNET]:
-            time_ = BIG_DELAY           
-
-        self.logger.info(f'{self.wallet_name} | {self.address} - начинаю работу через {time_} cекунд...')
-        await asyncio.sleep(time_)
-
         try:
             ua = UserAgent()
             ua = ua.random
@@ -291,6 +291,12 @@ class ZkBridge(Help):
             
             if status == 1:
                 self.logger.success(f'{self.wallet_name} | {self.address} | {self.to_chain} - успешно заклеймил "{self.nft}": {scan}{self.w3.to_hex(tx_hash)}...')
+                time_ = random.randint(DELAY[0], DELAY[1])
+
+                self.logger.info(f'{self.wallet_name} | {self.address} - начинаю работу через {time_} cекунд...')
+                await self.sleep_indicator(self.chain, time_)  
+
+                return True
         except Exception as e:
             error = str(e)
             if 'nonce too low' in error or 'already known' in error:
@@ -313,12 +319,9 @@ class ZkBridge(Help):
                 return False
 
     async def bridge_nft(self):
-        time_ = random.randint(DELAY[0], DELAY[1])
-        self.logger.info(f'{self.wallet_name} | {self.address} - начинаю работу через {time_} cекунд...')
-        await asyncio.sleep(time_)
         id_ = await self.balance_and_get_id()
-
         headers = await self.profile()
+
         if headers is None:
             return False
         
@@ -387,7 +390,7 @@ class ZkBridge(Help):
 
         async def bridge_():
             bridge = self.w3.eth.contract(address=Web3.to_checksum_address(self.bridge_address),
-                        abi=bridge_lz_abi if self.nft == 'Pandra' and self.to_chain not in (Chain.COMBO_TESTNET, Chain.OP_BNB) else bridge_abi)
+                        abi=bridge_lz_abi if self.nft == 'Pandra' and self.to_chain not in non_lz_chains else bridge_abi)
 
             self.logger.info(f'{self.wallet_name} | {self.address} | {self.chain} - начинаю бридж "{self.nft}"[{id_}]...')
             while True:
@@ -436,7 +439,11 @@ class ZkBridge(Help):
                     if status == 1:
                         self.logger.success(
                             f'{self.wallet_name} | {self.address} | {self.chain} - успешно бриджанул "{self.nft}"[{id_}] в {self.to_chain}: {scan}{self.w3.to_hex(tx_hash)}...')
-                        await self.sleep_indicator(self.chain)
+                        time_ = random.randint(DELAY[0], DELAY[1])
+
+                        self.logger.info(f'{self.wallet_name} | {self.address} - начинаю работу через {time_} cекунд...')
+                        await self.sleep_indicator(self.chain, time_)  
+
                         return self.w3.to_hex(tx_hash)
                     else:
                         self.logger.info(f'{self.wallet_name} | {self.address} | {self.chain} - пробую бриджить еще раз...')
